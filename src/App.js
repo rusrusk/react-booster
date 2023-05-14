@@ -5,41 +5,52 @@ const Header = (props) => {
     <h1>Name of the course: {props.course}</h1>    
   )
 }
+
+const Part = (props) => {
+  return (
+    <p>{props.part} {props.exercise}</p>
+  )
+}
+
 const Content = (props) => {
   return (
-    <p>{props.parts} {props.exercises}</p>
+    <>
+    <Part part={props.parts[0].part1} exercise={props.exercises[0].exercise1} />
+    <Part part={props.parts[1].part2} exercise={props.exercises[1].exercise2}/>
+    <Part part={props.parts[2].part3} exercise={props.exercises[2].exercise3}/>
+    </>
   )
 }
 
 const Total = (props) => {
   return (
-    <p>Number of exercises : {props.total}</p>
+    <p>Number of exercises : {props.exercises[0].exercise1 + props.exercises[1].exercise2 + props.exercises[2].exercise3}</p>
   )
 }
 
 const App = () => {
+  const course = {
+    name: 'Half Stack application development',
+    parts: [
+      {part1: 'Fundamentals of React'},
+      {part2: 'Using props to pass data'},
+      {part3: 'State of a component'},
+    ],
+    exercises: [
+      {exercise1: 10},
+      {exercise2: 7},
+      {exercise3: 14},
+    ]
+  }
 
-  const course = 'Half Stack application development'
-  const parts = [
-    {part1: 'Fundamentals of React'},
-    {part2: 'Using props to pass data'},
-    {part3: 'State of a component'},
-  ]
-    const exercises = [
-    {exercise1: 10},
-    {exercise2: 7},
-    {exercise3: 14},
-  ]
-  const total = exercises[0].exercise1 + exercises[1].exercise2 + exercises[2].exercise3
-  console.log(total);
+
+  
+
   return (
     <>
-      <Header course = {course}/>
-      <Content parts={parts[0].part1} exercises={exercises[0].exercise1}/>
-      <Content parts={parts[1].part2} exercises={exercises[1].exercise2}/>
-      <Content parts={parts[2].part3} exercises={exercises[2].exercise3}/>
-       
-      <Total total={exercises[0].exercise1 + exercises[1].exercise2 + exercises[2].exercise3}/>
+      <Header course = {course.name} />
+      <Content parts={course.parts} exercises={course.exercises} />
+      <Total exercises={course.exercises}/>
     </>
   ); 
 }
