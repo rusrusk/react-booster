@@ -1,59 +1,69 @@
-import Course from "./components/Course"
-import Content from "./components/Content"
+import { useState } from "react"
+import Filter from "./components/Filter"
+import PersonForm from "./components/PersonForm"
+import Persons from "./components/Persons"
 
-const App = () => {
-  const courses = [
-    {
-      name: 'Half Stack application development',
-      id: 1,
-      parts: [
-        {
-          name: 'Fundamentals of React',
-          exercises: 10,
-          id: 1
-        },
-        {
-          name: 'Using props to pass data',
-          exercises: 7,
-          id: 2
-        },
-        {
-          name: 'State of a component',
-          exercises: 14,
-          id: 3
-        },
-        {
-          name: 'Redux',
-          exercises: 11,
-          id: 4
-        }
-      ]
-    }, 
-    {
-      name: 'Node.js',
-      id: 2,
-      parts: [
-        {
-          name: 'Routing',
-          exercises: 3,
-          id: 1
-        },
-        {
-          name: 'Middlewares',
-          exercises: 7,
-          id: 2
-        }
-      ]
+const App = (props) => {
+
+  const [persons, setPersons] = useState(props.persons)
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [searchedWord, setSearchedWord] = useState('')
+
+
+  const addPerson = e => {
+    e.preventDefault()
+    if (persons.findIndex((p) => p.name === newName) !== -1) {
+      alert(newName + ' was already added to the array')
     }
-  ]
-  
+    const personObject = {
+      name: newName,
+      number: newNumber,
+      id: persons.length + 1
+    }
+      
+    setPersons(persons.concat(personObject))
+    setNewName('')
+    setNewNumber('')
+  }
+
+  const handleNameChange = e => {
+    console.log(e.target.value);
+    setNewName(e.target.value)
+  }
+
+  const handleNumberChange = e => {
+    console.log(e.target.value);
+    setNewNumber(e.target.value)
+  }
+
+  const handleSearchedWordChange = e => {
+    setSearchedWord(e.target.value.toLowerCase())
+  }
+
+  const filter = persons.filter(person =>
+    person.name.toLowerCase().includes(searchedWord))
 
   return (
     <>
-   <Course courses={courses} />
-   
-   </>
+      <h2>Phonebook</h2>
+      <Filter 
+        searchedWord={searchedWord}
+        handleSearchedWordChange={handleSearchedWordChange}
+      />
+        <h3>Add a new</h3>
+      <PersonForm 
+        addPerson={addPerson}
+        newName={newName}
+        handleNameChange={handleNameChange}
+        newNumber={newNumber}
+        handleNumberChange={handleNumberChange}
+      />
+      <h2>Numbers</h2>
+      <Persons searchedWord={searchedWord} filter={filter} persons={persons}/>
+    </>
   )
 }
+  
 
 export default App
