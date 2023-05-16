@@ -1,6 +1,8 @@
+import './index.css'
+
 const Notes = (props) => {
 	return (
-		<li>{props.note.content}</li>
+		<li className='note'>{props.note.content}</li>
 	)
 }
 

@@ -1,4 +1,7 @@
 const Persons = (props) => {
+
+  const label = "delete"  
+
 	return (
 		<ul>
         {props.searchedWord
@@ -9,7 +12,8 @@ const Persons = (props) => {
             </li>))
           : props.persons.map(person => (
             <li
-              key={person.id}>  {person.name} {person.number} 
+              key={person.id}>  {person.name} {person.number}         
+              <button onClick={() => props.deleteOrNot(person.id)}>{label}</button>
             </li>))
         }
       </ul>

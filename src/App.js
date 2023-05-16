@@ -2,7 +2,8 @@ import { useEffect, useState } from "react"
 import Filter from "./components/Filter"
 import PersonForm from "./components/PersonForm"
 import Persons from "./components/Persons"
-import axios from 'axios'
+import PersonService from './services/persons'
+import './index.css'
 
 const App = () => {
 
@@ -12,28 +13,49 @@ const App = () => {
   const [searchedWord, setSearchedWord] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+      PersonService
+      .getAllPeople()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
 
 
   const addPerson = e => {
     e.preventDefault()
-    if (persons.findIndex((p) => p.name === newName) !== -1) {
-      alert(newName + ' was already added to the array')
-    }
     const personObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1
+      // id: persons.length + 1
     }
-      
-    setPersons(persons.concat(personObject))
-    setNewName('')
-    setNewNumber('')
+    const filteredPersons = persons.filter(p => p.name === personObject.name)
+    if (persons.findIndex((p) => p.name === newName) !== -1) {
+      if (window.confirm(`${personObject.name} is already added to phonebook, replace the old number with a new one?`))
+      {
+        PersonService
+        .updatePerson(personObject, filteredPersons[0].id)
+        .then(updatedPerson => {
+          setPersons(persons.map(person => {
+            if (person.name === updatedPerson.name)
+              return updatedPerson
+            else
+              return person
+          }))
+          
+        })
+      }  
+      setNewName('') 
+      setNewNumber('') 
+    }
+    else {
+      PersonService
+      .createPerson(personObject)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+      })
+    }
   }
 
   const handleNameChange = e => {
@@ -53,6 +75,16 @@ const App = () => {
   const filter = persons.filter(person =>
     person.name.toLowerCase().includes(searchedWord))
 
+
+  const deleteOrNot = id => {
+    const person = persons.find(p => p.id === id)
+    if (window.confirm(`Delete ${person.name}?`)) {
+      PersonService
+        .deletePerson(id)
+        setPersons(persons.filter(p => p.id !== id))
+    } 
+  }
+
   return (
     <>
       <h2>Phonebook</h2>
@@ -69,7 +101,12 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons searchedWord={searchedWord} filter={filter} persons={persons}/>
+      <Persons
+        searchedWord={searchedWord} 
+        persons={persons}
+        filter={filter}
+        deleteOrNot={deleteOrNot}
+        />
     </>
   )
 }
