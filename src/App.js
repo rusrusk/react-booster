@@ -1,78 +1,86 @@
 import { useEffect, useState } from "react"
-import Filter from "./components/Filter"
-import PersonForm from "./components/PersonForm"
-import Persons from "./components/Persons"
-import axios from 'axios'
+import Notes from "./components/Notes"
+import noteService from "./services/notes"
+
 
 const App = () => {
-
-  const [persons, setPersons] = useState([])
-  const [newName, setNewName] = useState('')
-  const [newNumber, setNewNumber] = useState('')
-  const [searchedWord, setSearchedWord] = useState('')
+  const [notes, setNotes] = useState([])
+  const [newNote, setNewNote] = useState('')
+  const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
-      })
+    noteService
+    .getAll
+    .then(initialNotes => {
+      setNotes(initialNotes.data)
+    })
+
   }, [])
 
+  const toggleHierarchy = id => {
+    // console.log('importance of ' + id + ' needs to be toggled');
+    const note = notes.find(n => n.id === id)
+    const changedNote = { ...note, important: !note.important }
+  
+    noteService
+      .update(id, changedNote)
+      .then(returnedNote => {
+        notes.map(note => note.id !== id ? note : returnedNote.data)
+      })
+  }
+  
 
-  const addPerson = e => {
-    e.preventDefault()
-    if (persons.findIndex((p) => p.name === newName) !== -1) {
-      alert(newName + ' was already added to the array')
+  const addNote = (event) => {
+    event.preventDefault()
+    const noteObject = {
+      content: newNote,
+      important: Math.random() > 0.5,
+      // id: notes.length + 1,
     }
-    const personObject = {
-      name: newName,
-      number: newNumber,
-      id: persons.length + 1
-    }
-      
-    setPersons(persons.concat(personObject))
-    setNewName('')
-    setNewNumber('')
+
+    noteService
+      .create(noteObject)
+      .then(returnedNote => {
+        setNotes(notes.concat(returnedNote.data))
+        setNewNote('')
+      })
   }
 
-  const handleNameChange = e => {
-    console.log(e.target.value);
-    setNewName(e.target.value)
+  const handleNoteChange = (event) => {
+    setNewNote(event.target.value)
   }
 
-  const handleNumberChange = e => {
-    console.log(e.target.value);
-    setNewNumber(e.target.value)
-  }
-
-  const handleSearchedWordChange = e => {
-    setSearchedWord(e.target.value.toLowerCase())
-  }
-
-  const filter = persons.filter(person =>
-    person.name.toLowerCase().includes(searchedWord))
+  const notesToShow = showAll
+    ? notes
+    : notes.filter(note => note.important)
 
   return (
-    <>
-      <h2>Phonebook</h2>
-      <Filter 
-        searchedWord={searchedWord}
-        handleSearchedWordChange={handleSearchedWordChange}
-      />
-        <h3>Add a new</h3>
-      <PersonForm 
-        addPerson={addPerson}
-        newName={newName}
-        handleNameChange={handleNameChange}
-        newNumber={newNumber}
-        handleNumberChange={handleNumberChange}
-      />
-      <h2>Numbers</h2>
-      <Persons searchedWord={searchedWord} filter={filter} persons={persons}/>
-    </>
+    <div>
+      <h1>Notes</h1>
+      <div>
+        <button onClick={() => setShowAll(!showAll)}>
+          show {showAll ? 'important' : 'all' }
+        </button>
+      </div> 
+      <ul>
+        <ul>
+          {notesToShow.map(note => 
+            <Notes 
+            key={note.id} 
+            note={note}
+            toggleHierarchy={() => toggleHierarchy(note.id)}
+            />
+          )}
+        </ul>
+      </ul>
+      <form onSubmit={addNote}>
+        <input value={newNote} onChange={handleNoteChange} />
+        <button type="submit">save</button>
+      </form>
+    </div>
   )
 }
+
 
 export default App
 

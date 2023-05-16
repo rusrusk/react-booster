@@ -1,24 +1,69 @@
 {
-	"persons":[
-	  { 
-		"name": "Arto Hellas", 
-		"number": "040-123456",
-		"id": 1
-	  },
-	  { 
-		"name": "Ada Lovelace", 
-		"number": "39-44-5323523",
-		"id": 2
-	  },
-	  { 
-		"name": "Dan Abramov", 
-		"number": "12-43-234345",
-		"id": 3
-	  },
-	  { 
-		"name": "Mary Poppendieck", 
-		"number": "39-23-6423122",
-		"id": 4
-	  }
-	]
-  }
+  "notes": [
+    {
+      "id": 1,
+      "content": "HTML is easy",
+      "important": false
+    },
+    {
+      "id": 2,
+      "content": "Browser can execute only JavaScript",
+      "important": false
+    },
+    {
+      "id": 3,
+      "content": "GET and POST are the most important methods of HTTP protocol",
+      "important": false
+    },
+    {
+      "content": "DNS server",
+      "important": false,
+      "id": 4
+    },
+    {
+      "content": "CORS policy",
+      "important": false,
+      "id": 5
+    },
+    {
+      "content": "CSRF",
+      "important": false,
+      "id": 6
+    },
+    {
+      "content": "CSRF",
+      "important": false,
+      "id": 7
+    },
+    {
+      "content": "Spring Security",
+      "important": false,
+      "id": 8
+    },
+    {
+      "content": "Security",
+      "important": false,
+      "id": 9
+    },
+    {
+      "content": "Security",
+      "important": false,
+      "id": 10
+    },
+    {
+      "content": "Security",
+      "important": true,
+      "id": 11
+    },
+    {
+      "content": "Cloud",
+      "important": true,
+      "id": 12
+    },
+    {
+      "content": "Jenkins",
+      "important": true,
+      "id": 13
+    }
+  ]
+}
